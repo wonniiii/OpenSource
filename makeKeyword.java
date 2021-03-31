@@ -9,13 +9,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.jsoup.Jsoup;
 import org.snu.ids.kkma.index.Keyword;
 import org.snu.ids.kkma.index.KeywordExtractor;
 import org.snu.ids.kkma.index.KeywordList;
@@ -25,72 +23,83 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-public class makeKeyword {
-	public static void main(String[] args) throws ParserConfigurationException, IOException, TransformerException  {
-		// TODO Auto-generated method stub
+public class makeKeyword{
 
-		File path = new File("src/2주차 실습 html");
-		File[] files = path.listFiles();
-		int fileNum = files.length;
+	String str;
+
+	public makeKeyword(String str) throws ParserConfigurationException, SAXException, IOException, TransformerException {
+		super();
+		doKeyword(str);
+	}
+	
+	public void doKeyword(String str) throws ParserConfigurationException, SAXException, IOException, TransformerException {
 
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
-		Document document = docBuilder.newDocument();
+		
+		Document document = docBuilder.parse(str);
+		document.getDocumentElement().normalize();
+		
+		Document nDocument = docBuilder.newDocument();
+		nDocument.setXmlStandalone(true); 
+		
+		Element docs = nDocument.createElement("docs");
+		nDocument.appendChild(docs);
 
-		document.setXmlStandalone(true);
-
-		Element docs = document.createElement("docs");
-		document.appendChild(docs);
-	
-		for (int i = 0; i < fileNum; i++) {
-
-			String fileName = files[i].getName();
-			int pos = fileName.lastIndexOf(".");
-			String _fileName = fileName.substring(0, pos);
-
-			String number = Integer.toString(i);
-
-			Element doc = document.createElement("doc");
-			docs.appendChild(doc);
-
-			doc.setAttribute("id", number);
-
-			Element title = document.createElement("title");
-			title.appendChild(document.createTextNode(_fileName));
-			doc.appendChild(title);
-
-			org.jsoup.nodes.Document origin = Jsoup.parse(files[i], "UTF-8");
-
-			org.jsoup.nodes.Element bodyText = origin.body();
-
-			Element body = document.createElement("body");
-
+		NodeList doclist = document.getElementsByTagName("doc");
+		
+		for (int i=0; i<doclist.getLength(); i++) {
+			Node doclistNode = doclist.item(i);
 			
+			if (doclistNode.getNodeType() == Node.ELEMENT_NODE) {
+				
+				Element doclistElement = (Element) doclistNode;
+				
+				Element eDoc = nDocument.createElement("doc");
+				docs.appendChild(eDoc);
+				eDoc.setAttribute("id", doclistElement.getAttribute("id")); // 옵션도 다시 설정
+				
 
-			doc.appendChild(body);
-
-			KeywordExtractor ke = new KeywordExtractor();
-			KeywordList kl = ke.extractKeyword(bodyText.text(), true);
-			for (int k = 0; k < kl.size(); k++) {
-				Keyword kwrd = kl.get(k);
-				body.appendChild(document.createTextNode("#" + kwrd.getString() + kwrd.getCnt()));
-
+				NodeList titleList = doclistElement.getElementsByTagName("title");
+				Element titleElement = (Element) titleList.item(0);
+				Node title = titleElement.getFirstChild();
+				
+				Element eTitle = nDocument.createElement("title");
+				eTitle.appendChild(nDocument.createTextNode(title.getNodeValue()));
+				eDoc.appendChild(eTitle);
+				
+				NodeList bodyList = doclistElement.getElementsByTagName("body");
+				Element bodyElement = (Element) bodyList.item(0);
+				Node body = bodyElement.getFirstChild();
+				
+				
+				String testString = body.getNodeValue();
+				String finString = "";
+				
+				KeywordExtractor ke = new KeywordExtractor();
+				KeywordList kl = ke.extractKeyword(testString, true);
+				
+				for (int j=0; j<kl.size(); j++) {
+					Keyword kwrd = kl.get(j);
+					finString += kwrd.getString() + ":" + kwrd.getCnt() + "#";
+				}
+				
+				Element eBody = nDocument.createElement("body");
+				eBody.appendChild(nDocument.createTextNode(finString));
+				eDoc.appendChild(eBody);
 			}
-
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-
-			Transformer transformer = transformerFactory.newTransformer();
-
-			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
-
-			DOMSource source = new DOMSource(document);
-			StreamResult result = new StreamResult(new FileOutputStream(new File("src/data/index.xml")));
-
-			transformer.transform(source, result);
-
 		}
+		
+		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+		Transformer transformer = transformerFactory.newTransformer();
+		
+		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4"); 
+        transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes"); 
+        transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
+		DOMSource source = new DOMSource(nDocument);
+		StreamResult result = new StreamResult(new FileOutputStream(new File("index.xml")));
+		
+		transformer.transform(source, result);	
 	}
 }

@@ -22,24 +22,36 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import org.jsoup.Jsoup;
 import org.jsoup.parser.*;
 
-public class makeCollection {
-	public static void main(String[] args) throws Exception {
-		// TODO Auto-generated method stub
 
+public class makeCollection {
+
+	String str;
+
+	public makeCollection(String str)
+			throws ParserConfigurationException, IOException, TransformerException, SAXException {
+
+		super();
+		doCollection(str);
+	}
+
+	public void doCollection(String str)
+			throws ParserConfigurationException, IOException, TransformerException, SAXException {
 
 		File path = new File("src/2주차 실습 html");
 		File[] files = path.listFiles();
 		int fileNum = files.length;
 
-		
-		
 		DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 		Document document = docBuilder.newDocument();
-		
+		Document doc = docBuilder.parse(str);
+
 		document.setXmlStandalone(true);
 
 		Element docs = document.createElement("docs");
@@ -53,10 +65,10 @@ public class makeCollection {
 
 			String number = Integer.toString(i);
 
-			Element doc = document.createElement("doc");
-			docs.appendChild(doc);
+			Element doc2 = document.createElement("doc");
+			docs.appendChild(doc2);
 
-			doc.setAttribute("id", number);
+			doc2.setAttribute("id", number);
 
 			Element title = document.createElement("title");
 			title.appendChild(document.createTextNode(_fileName));
@@ -72,21 +84,20 @@ public class makeCollection {
 
 			doc.appendChild(body);
 
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 
-		Transformer transformer = transformerFactory.newTransformer();
+			Transformer transformer = transformerFactory.newTransformer();
 
-		transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-		transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty(OutputKeys.DOCTYPE_PUBLIC, "yes");
 
-		DOMSource source = new DOMSource(document);
-		StreamResult result = new StreamResult(new FileOutputStream(new File("src/data/Collection.xml")));
+			DOMSource source = new DOMSource(document);
+			StreamResult result = new StreamResult(new FileOutputStream(new File("Collection.xml")));
 
-		transformer.transform(source, result);
+			transformer.transform(source, result);
 
-		
+		}
 	}
-}
 }
