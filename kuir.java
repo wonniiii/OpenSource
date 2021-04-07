@@ -29,8 +29,9 @@ public class kuir {
 				makeKeyword mk = new makeKeyword(args[1]);
 			}
 			else if (args[0].equals("-i")) {
-		
-				
+				@SuppressWarnings("unused")
+				indexer indexer = new indexer();
+							
 			}
 
 			
@@ -39,6 +40,7 @@ public class kuir {
 			System.err.println("올바른 옵션을 입력하세요");
 			System.exit(1);
 		}
+		
 
 	}
 	}

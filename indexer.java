@@ -43,7 +43,7 @@ public class indexer {
 		String str = Files.readString(file.toPath());
 		StringBuffer sb = new StringBuffer();
 
-		// 아래 5줄은 xml파일을 Document로 생성하는 과정
+		
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		InputSource is = new InputSource();
