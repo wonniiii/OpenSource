@@ -57,7 +57,7 @@ public class makeKeyword{
 				
 				Element eDoc = nDocument.createElement("doc");
 				docs.appendChild(eDoc);
-				eDoc.setAttribute("id", doclistElement.getAttribute("id")); // �ɼǵ� �ٽ� ����
+				eDoc.setAttribute("id", doclistElement.getAttribute("id")); // ¿É¼Çµµ ´Ù½Ã ¼³Á¤
 				
 
 				NodeList titleList = doclistElement.getElementsByTagName("title");
