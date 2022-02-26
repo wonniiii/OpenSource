@@ -43,7 +43,7 @@ public class makeCollection {
 	public void doCollection(String str)
 			throws ParserConfigurationException, IOException, TransformerException, SAXException {
 
-		File path = new File("src/2ÁÖÂ÷ ½Ç½À html");
+		File path = new File("src/2ÃÃ–Ã‚Ã· Â½Ã‡Â½Ã€ html");
 		File[] files = path.listFiles();
 		int fileNum = files.length;
 
