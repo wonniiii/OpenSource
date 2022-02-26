@@ -43,7 +43,7 @@ public class indexer {
 		String str = Files.readString(file.toPath());
 		StringBuffer sb = new StringBuffer();
 
-		// ¾Æ·¡ 5ÁÙÀº xmlÆÄÀÏÀ» Document·Î »ı¼ºÇÏ´Â °úÁ¤
+		// ì•„ë˜ 5ì¤„ì€ xmlíŒŒì¼ì„ Documentë¡œ ìƒì„±í•˜ëŠ” ê³¼ì •
 		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
 		DocumentBuilder db = dbf.newDocumentBuilder();
 		InputSource is = new InputSource();
@@ -86,8 +86,8 @@ public class indexer {
 			}
 			
 			for(int z=0; z<tf.length; z++) {
-				Double wxy = tf[z]*Math.log((double)5/dfx); //°è»ê
-				tf_idf[z] = Math.round(wxy*100)/100.0; //¼Ò¼öÁ¡ µÑÂ°ÀÚ¸®±îÁö
+				Double wxy = tf[z]*Math.log((double)5/dfx); //ê³„ì‚°
+				tf_idf[z] = Math.round(wxy*100)/100.0; //ì†Œìˆ˜ì  ë‘˜ì§¸ìë¦¬ê¹Œì§€
 				
 			}
 			
