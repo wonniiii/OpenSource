@@ -36,7 +36,7 @@ public class kuir {
 			
 			
 		} else {
-			System.err.println("¿Ã¹Ù¸¥ ¿É¼ÇÀ» ÀÔ·ÂÇÏ¼¼¿ä");
+			System.err.println("æ£µå®˜å¼— å¯è®°é˜‘ æ¶ä»¿çªæŠ€å¤¸");
 			System.exit(1);
 		}
 
